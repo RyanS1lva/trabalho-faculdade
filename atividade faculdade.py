@@ -1,7 +1,8 @@
 import random
 from time import sleep
 
-alunos = [{'Nome': 'Ryan', 'id': 1, 'Xp': 10, 'Nivel': 1}]
+alunos = [{'Nome': 'Ryan', 'id': 1, 'Xp': 10, 'Nivel': 1},
+          {'Nome': 'Lara', 'id': 2, 'Xp': 50, 'Nivel': 2}]
 
 # Adiciona os dados do aluno dentro de um dicionário,
 # que por sua vez é acrescentado em uma lista chamada "alunos".
@@ -292,17 +293,40 @@ def boss_lv3(nome, nivel, xp):
                 nivel = 3
                 return nivel, xp
 
-# Loop principal, coleta o nome do aluno e víncula a ele os dados iniciais do jogo.
-while True:
-    nomeAluno = str(input('Digite o seu nome: '))
-    id_aluno = len(alunos) + 1
-    print('')
-    # Valores iniciais
-    nivel_aluno = 1
-    xp_aluno = 0
+# Permite o usuário fazer um login e acessar dados já existentes caso desejado.
+login = int(input('Deseja logar num cadastro já existente? digite [1]SIM/[0]NÃO: '))
+if login == 1:
+    for aluno in alunos:
+        print(aluno)
+    login_aluno = int(input('Digite o número do seu id: '))
+    for chave, valor in alunos[login_aluno - 1].items():
+        if chave == 'Nome':
+            nomeAluno = valor
+        elif chave == 'id':
+            id_aluno = valor
+        elif chave == 'Xp':
+            xp_aluno = valor
+        elif chave == 'Nivel':
+            nivel_aluno = valor
     xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
-    adiciona_aluno(nomeAluno, id_aluno, xp_aluno, nivel_aluno)
 
+elif login != 1 and login != 0:
+    print('Função não encontrada, tente novamente!')
+
+# Loop principal, coleta o nome do aluno e víncula a ele os dados iniciais do jogo.
+
+while True:
+    if login == 0:
+        nomeAluno = str(input('Digite o seu nome: '))
+        id_aluno = len(alunos) + 1
+        print('')
+        # Valores iniciais
+        nivel_aluno = 1
+        xp_aluno = 0
+        xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
+        adiciona_aluno(nomeAluno, id_aluno, xp_aluno, nivel_aluno)
+    elif login != 1 and login != 0:
+        break
     # Fazendo com que os alunos fiquem ordenados dentro da lista de acordo com o seu XP (ORDEM DECRESCENTE)
     alunos.sort(key=lambda item: item['Xp'], reverse=True)
 
@@ -311,7 +335,7 @@ while True:
     for aluno in alunos:
         posicao += 1
         print(f'{posicao}° {aluno}')
-    
+
     while True:
         funcao = str(input('Você deseja continuar[S/N]: ')).upper()
         if funcao == 'S':
@@ -321,3 +345,4 @@ while True:
             sleep(1)
             print('Volte logo!')
             break
+    break
