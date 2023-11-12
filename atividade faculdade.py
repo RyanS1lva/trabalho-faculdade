@@ -41,51 +41,58 @@ def detector_nivel(nome, nivel, xp):
 
 def gerador_questoes_lv1(nome, nivel, xp):
     while xp <= 50:
-        v1 = random.randint(2, 10)
-        v2 = random.randint(1, 10)
-        # Isso aqui vai garantir que não tenham contas com o resultado negativo
         while True:
-            if (v2 == v1):
-                v2 = random.randint(1, 10)
-                continue
-            else:
+            v1 = random.randint(2, 10)
+            v2 = random.randint(1, 10)
+            # Isso aqui vai garantir que não tenham contas com o resultado negativo
+            if v2 != v1:
                 break
+
         operacoes = random.randint(1, 2)
         print("Qual o resultado da seguinte operação?")
         if operacoes == 1:
             print("{} + {} = ?".format(v1, v2))
-            resultado = int(input('>>>'" "))
-            if resultado == (v1 + v2):
-                print("Correto")
-                print("{} ganhou +10 de XP" .format(nome))
-                xp += 10
-                if xp >= 50:
-                    return xp
-                else:
-                    continue
-            else:
-                print("Incorreto")
-                continue
+            while True: #Laço caso o usuário insira uma string no lugar de um number
+                try:
+                    resultado = int(input('>>> '))
+                    if resultado == (v1 + v2):
+                        print("Correto")
+                        print("{} ganhou +10 de XP".format(nome))
+                        xp += 10
+                        if xp >= 50:
+                            return xp
+                        break  # Sai do loop interno e faz a próxima pergunta
+                    else:
+                        print("Incorreto")
+                        break  # Sai do loop interno e faz a próxima pergunta
+                except ValueError:
+                    print('Por favor, digite um número.')
         elif operacoes == 2:
             while True:
-                if (v2 > v1) or (v2 == v1):
-                    v2 = random.randint(1, 10)
-                    continue
-                else:
+                if v2 <= v1:
                     break
-            print("{} - {} = ?".format(v1, v2))
-            resultado = int(input('>>>'" "))
-            if resultado == (v1 - v2):
-                print("Correto")
-                print("{} ganhou +10 de XP" .format(nome))
-                xp += 10
-                if xp >= 50:
-                    return xp
                 else:
-                    continue
-            else:
-                print("Incorreto")
-                continue
+                    v2 = random.randint(1, 10)
+
+            print("{} - {} = ?".format(v1, v2))
+            while True: #Laço igual ao de cima
+                try:
+                    resultado = int(input('>>> '))
+                    if resultado == (v1 - v2):
+                        print("Correto")
+                        print("{} ganhou +10 de XP".format(nome))
+                        xp += 10
+                        if xp >= 50:
+                            return xp
+                        break  # Sai do loop interno e faz a próxima pergunta
+                    else:
+                        print("Incorreto")
+                        break  # Sai do loop interno e faz a próxima pergunta
+                except ValueError:
+                    print('Por favor, digite um número.')
+    return xp #tentei alterar o nivel e o xp no ranking dos alunos, mas sem sucesso
+
+
 
 
 #Boss 1
@@ -292,57 +299,83 @@ def boss_lv3(nome, nivel, xp):
                 print("Incorreto")
                 nivel = 3
                 return nivel, xp
+#Iicio da interface
+print('''
+|====================================|
+|       BEM VINDO AO DRAW-MATH       |
+|====================================|
+''')
 
-# Permite o usuário fazer um login e acessar dados já existentes caso desejado.
-login = int(input('Deseja logar num cadastro já existente? digite [1]SIM/[0]NÃO: '))
-if login == 1:
-    for aluno in alunos:
-        print(aluno)
-    login_aluno = int(input('Digite o número do seu id: '))
-    for chave, valor in alunos[login_aluno - 1].items():
-        if chave == 'Nome':
-            nomeAluno = valor
-        elif chave == 'id':
-            id_aluno = valor
-        elif chave == 'Xp':
-            xp_aluno = valor
-        elif chave == 'Nivel':
-            nivel_aluno = valor
-    xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
-
-elif login != 1 and login != 0:
-    print('Função não encontrada, tente novamente!')
-
-# Loop principal, coleta o nome do aluno e víncula a ele os dados iniciais do jogo.
-
-while True:
-    if login == 0:
-        nomeAluno = str(input('Digite o seu nome: '))
-        id_aluno = len(alunos) + 1
-        print('')
-        # Valores iniciais
-        nivel_aluno = 1
-        xp_aluno = 0
-        xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
-        adiciona_aluno(nomeAluno, id_aluno, xp_aluno, nivel_aluno)
-    elif login != 1 and login != 0:
-        break
-    # Fazendo com que os alunos fiquem ordenados dentro da lista de acordo com o seu XP (ORDEM DECRESCENTE)
-    alunos.sort(key=lambda item: item['Xp'], reverse=True)
-
-    posicao = 0
-    print(f'{"=-" * 4}RANKING DE ALUNOS{"-=" * 4}')
-    for aluno in alunos:
-        posicao += 1
-        print(f'{posicao}° {aluno}')
-
-    while True:
-        funcao = str(input('Você deseja continuar[S/N]: ')).upper()
-        if funcao == 'S':
-            xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
-        elif funcao == 'N':
-            print('Finalizando...')
-            sleep(1)
-            print('Volte logo!')
+def mural_opções (): #resolvi fazer só para esse caso seja necesário chamar somente esse.
+    print ('Escolha uma das opções abaixo:\n'
+        '1 - Entrar\n'
+        '2 - Cadastrar\n'
+        '3 - Mural de XP\n'
+        '4 - Sair')
+def interface_inicial (): #input e suas opções
+    while True: #laço caso o usuário coloque uma opção inexistente
+        login = input('>>')
+        if login == '1':
+            for aluno in alunos:
+                print(aluno)
+            while True: #laço para caso coloque um número ou id invalido
+                try:
+                    login_aluno = int(input('Digite o número do seu id: '))
+                except ValueError:
+                    print('Por favor, insira um número válido para o ID')
+                    continue
+                if 1 <= login_aluno <= len(alunos):
+                    # ID válido, obter dados do aluno
+                    for chave, valor in alunos[login_aluno - 1].items():
+                        if chave == 'Nome':
+                            nomeAluno = valor
+                        elif chave == 'id':
+                            id_aluno = valor
+                        elif chave == 'Xp':
+                            xp_aluno = valor
+                        elif chave == 'Nivel':
+                            nivel_aluno = valor
+                    xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
+                    break  # Sai do loop interno, pois temos um ID válido
+                else:
+                    print('ID inválido. Tente novamente.')
             break
-    break
+        if login == '2': #criação de usuário
+                nomeAluno = str(input('Digite o seu nome: '))
+                id_aluno = len(alunos) + 1
+                print('')
+                # Valores iniciais
+                nivel_aluno = 1
+                xp_aluno = 0
+                xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
+                adiciona_aluno(nomeAluno, id_aluno, xp_aluno, nivel_aluno)
+                break
+        if login == '3': #mural de XP
+            alunos.sort(key=lambda item: item['Xp'], reverse=True)
+
+            posicao = 0
+            print(f'{"=-" * 4}RANKING DE ALUNOS{"-=" * 4}')
+            for aluno in alunos:
+                    posicao += 1
+                    print(f'{posicao}° {aluno}')
+            mural_opções()
+        elif login == '4': #fecha o código
+            return
+        else:
+            print ('Valor não encontrado, tente novamente.')
+            continue
+
+    while True: #laço caso insira uma opção inexistente
+        funcao = input('Você deseja continuar [S/N]: ')
+        if funcao == 'S' or funcao == 's':
+            xp_aluno, nivel_aluno = detector_nivel(nomeAluno, nivel_aluno, xp_aluno)
+        elif funcao == 'N' or funcao == 'n':
+            print(f'Você chegou até o nível {nivel_aluno}, e terminou com {xp_aluno} de xp, parábens!')
+        else:
+            print('Insira "S" para SIM e "N" para NÃO')
+
+mural_opções()
+interface_inicial()
+print('Finalizando...')
+sleep(1)
+print('Volte logo!')
